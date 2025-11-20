@@ -208,4 +208,24 @@ class AnimeProvider with ChangeNotifier {
     }
     return results;
   }
+
+  // Toggle favorite status of an anime
+  void toggleFavorite(String animeId) {
+    final index = _animes.indexWhere((anime) => anime.id == animeId);
+    if (index != -1) {
+      _animes[index] = _animes[index].copyWith(
+        isFavorite: !(_animes[index].isFavorite),
+      );
+      notifyListeners();
+    }
+    
+    // update in search results if it exists there
+    final searchIndex = _searchResults.indexWhere((anime) => anime.id == animeId);
+    if (searchIndex != -1) {
+      _searchResults[searchIndex] = _searchResults[searchIndex].copyWith(
+        isFavorite: !(_searchResults[searchIndex].isFavorite),
+      );
+      notifyListeners();
+    }
+  }
 }

@@ -5,6 +5,7 @@ import '../providers/auth_provider.dart';
 import '../providers/anime_provider.dart';
 import '../models/anime.dart';
 import '../screens/anime/anime_list_screen.dart';
+import 'favorites_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -22,17 +23,65 @@ class ProfileScreen extends StatelessWidget {
               floating: true,
               pinned: true,
               actions: [
-                IconButton(
-                  icon: const Icon(Icons.person),
-                  onPressed: () {
-                    // Navigate to user profile details
+                PopupMenuButton<String>(
+                  icon: const Icon(Icons.more_vert),
+                  onSelected: (String value) async {
+                    switch (value) {
+                      case 'favorites':
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => FavoritesScreen()),
+                        );
+                        break;
+                      case 'settings':
+                        // Navigate to settings screen
+                        // Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsScreen()));
+                        break;
+                      case 'logout':
+                        await context.read<AuthProvider>().signOut();
+                        if (context.mounted) {
+                          Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            '/login',
+                            (route) => false,
+                          );
+                        }
+                        break;
+                    }
                   },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: () {
-                    // Show search bar
-                  },
+                  itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                    const PopupMenuItem<String>(
+                      value: 'favorites',
+                      child: Row(
+                        children: [
+                          Icon(Icons.favorite, color: Colors.red, size: 20),
+                          SizedBox(width: 8),
+                          Text('Favorites'),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'settings',
+                      child: Row(
+                        children: [
+                          Icon(Icons.settings, size: 20),
+                          SizedBox(width: 8),
+                          Text('Settings'),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuDivider(),
+                    const PopupMenuItem<String>(
+                      value: 'logout',
+                      child: Row(
+                        children: [
+                          Icon(Icons.logout, color: Colors.red, size: 20),
+                          SizedBox(width: 8),
+                          Text('Logout'),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ],
               bottom: PreferredSize(

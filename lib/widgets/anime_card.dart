@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/anime.dart';
 import '../pages/anime_detail_page.dart';
+import '../providers/anime_provider.dart';
 
 class AnimeCard extends StatelessWidget {
   final Anime anime;
+  final VoidCallback? onFavoriteToggle;
 
   const AnimeCard({
     Key? key,
     required this.anime,
+    this.onFavoriteToggle,
   }) : super(key: key);
 
   @override
@@ -40,10 +44,14 @@ class AnimeCard extends StatelessWidget {
                   topLeft: Radius.circular(8.0),
                   topRight: Radius.circular(8.0),
                 ),
-                child: (anime.imageUrl?.isNotEmpty ?? false)
-                    ? Image.network(
+                child: Stack(
+                  children: [
+                    if (anime.imageUrl?.isNotEmpty ?? false)
+                      Image.network(
                         anime.imageUrl!,
                         fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
                         errorBuilder: (_, __, ___) => Container(
                           color: Colors.grey[300],
                           child: const Icon(Icons.error, size: 40, color: Colors.grey),
@@ -58,10 +66,39 @@ class AnimeCard extends StatelessWidget {
                           );
                         },
                       )
-                    : Container(
+                    else
+                      Container(
                         color: Colors.grey[200],
                         child: const Icon(Icons.movie, size: 60, color: Colors.grey),
                       ),
+                    // Favorite button
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: GestureDetector(
+                        onTap: () {
+                          final provider = Provider.of<AnimeProvider>(context, listen: false);
+                          provider.toggleFavorite(anime.id);
+                          if (onFavoriteToggle != null) {
+                            onFavoriteToggle!();
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: Colors.black54,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Icon(
+                            anime.isFavorite ? Icons.favorite : Icons.favorite_border,
+                            color: anime.isFavorite ? Colors.red : Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             // Title and info
