@@ -41,7 +41,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
   void _removeFromFavorites(String animeId) {
     setState(() {
-      _favorites.removeWhere( u(anime) => anime.id == animeId);
+      _favorites.removeWhere((anime) => anime.id == animeId);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Removed from favorites')),
