@@ -5,6 +5,7 @@ import 'package:otakutn/pages/login_page.dart';
 import 'package:otakutn/pages/register_page.dart';
 import 'package:otakutn/providers/anime_provider.dart';
 import 'package:otakutn/providers/auth_provider.dart';
+import 'package:otakutn/services/cloudinary_service.dart';
 import 'firebase_options.dart';
 
 
@@ -17,6 +18,7 @@ void main() async {
         options: DefaultFirebaseOptions.currentPlatform,
       );
     }
+    await CloudinaryService.init();
     runApp(const MyApp());
   } catch (e) {
     print('Firebase initialization error: $e');

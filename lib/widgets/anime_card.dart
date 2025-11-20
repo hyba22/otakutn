@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/anime.dart';
+import '../pages/anime_detail_page.dart';
 
 class AnimeCard extends StatelessWidget {
   final Anime anime;
@@ -12,50 +13,89 @@ class AnimeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-      child: ListTile(
-        leading: (anime.imageUrl?.isNotEmpty ?? false)
-            ? ClipRRect(
-                borderRadius: BorderRadius.circular(4.0),
-                child: Image.network(
-                  anime.imageUrl!,
-                  width: 60,
-                  height: 80,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => const Icon(Icons.error, size: 30),
-                ),
-              )
-            : const Icon(Icons.movie, size: 40),
-        title: Text(
-          anime.title ?? 'Titre inconnu',
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        subtitle: Text(
-          (anime.synopsis?.isNotEmpty ?? false) || (anime.description?.isNotEmpty ?? false)
-              ? '${(anime.synopsis ?? anime.description ?? '').substring(0, (anime.synopsis?.length ?? anime.description?.length ?? 0) > 50 ? 50 : (anime.synopsis?.length ?? anime.description?.length ?? 0))}...'
-              : 'Aucune description disponible',
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
+      margin: const EdgeInsets.all(4.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8.0),
         onTap: () {
-          // Navigate to anime detail screen when implemented
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => AnimeDetailScreen(anime: anime),
-          //   ),
-          // );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AnimeDetailPage(
+                animeId: anime.id,
+                animeTitle: anime.title ?? 'Unknown Title',
+              ),
+            ),
+          );
         },
-        trailing: anime.rating > 0
-            ? Row(
-                mainAxisSize: MainAxisSize.min,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Image
+            Expanded(
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(8.0),
+                  topRight: Radius.circular(8.0),
+                ),
+                child: (anime.imageUrl?.isNotEmpty ?? false)
+                    ? Image.network(
+                        anime.imageUrl!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          color: Colors.grey[300],
+                          child: const Icon(Icons.error, size: 40, color: Colors.grey),
+                        ),
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Container(
+                            color: Colors.grey[200],
+                            child: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        },
+                      )
+                    : Container(
+                        color: Colors.grey[200],
+                        child: const Icon(Icons.movie, size: 60, color: Colors.grey),
+                      ),
+              ),
+            ),
+            // Title and info
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.star, color: Colors.amber, size: 16),
-                  const SizedBox(width: 4),
-                  Text(anime.rating.toStringAsFixed(1)),
+                  Text(
+                    anime.title ?? 'Titre inconnu',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  if (anime.rating > 0)
+                    Row(
+                      children: [
+                        const Icon(Icons.star, size: 16, color: Colors.amber),
+                        const SizedBox(width: 4),
+                        Text(
+                          anime.rating.toStringAsFixed(1),
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      ],
+                    ),
                 ],
-              )
-            : null,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

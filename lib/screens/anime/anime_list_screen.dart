@@ -155,16 +155,25 @@ class _AnimeListScreenState extends State<_AnimeListScreenContent> {
                   ),
                 ),
               ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  if (index >= items.length) {
-                    return _buildLoadMoreIndicator(animeProvider);
-                  }
-                  final anime = items[index];
-                  return AnimeCard(anime: anime);
-                },
-                childCount: items.length + (animeProvider.hasMore && !showSearchResults ? 1 : 0),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+              sliver: SliverGrid(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.6,
+                  crossAxisSpacing: 8.0,
+                  mainAxisSpacing: 12.0,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    if (index >= items.length) {
+                      return _buildLoadMoreIndicator(animeProvider);
+                    }
+                    final anime = items[index];
+                    return AnimeCard(anime: anime);
+                  },
+                  childCount: items.length + (animeProvider.hasMore && !showSearchResults ? 1 : 0),
+                ),
               ),
             ),
           ],
@@ -174,17 +183,15 @@ class _AnimeListScreenState extends State<_AnimeListScreenContent> {
   }
 
   Widget _buildLoadMoreIndicator(AnimeProvider animeProvider) {
-    return SliverToBoxAdapter(
+    return Center(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: animeProvider.isLoadingMore
-              ? const CircularProgressIndicator()
-              : ElevatedButton(
-                  onPressed: _loadMoreAnimes,
-                  child: const Text('Load More'),
-                ),
-        ),
+        child: animeProvider.isLoadingMore
+            ? const CircularProgressIndicator()
+            : ElevatedButton(
+                onPressed: _loadMoreAnimes,
+                child: const Text('Load More'),
+              ),
       ),
     );
   }
