@@ -1,4 +1,3 @@
-
 class Episode {
   final String id;
   final String animeId;
@@ -7,8 +6,9 @@ class Episode {
   final String description;
   final String videoUrl;
   final String thumbnailUrl;
-  final int duration; // en secondes
+  final int duration; 
   final bool isWatched;
+  final List<Comment> comments; 
 
   Episode({
     required this.id,
@@ -20,7 +20,8 @@ class Episode {
     required this.thumbnailUrl,
     required this.duration,
     this.isWatched = false,
-  });
+    List<Comment>? comments, 
+  }) : comments = comments ?? [];
 
   factory Episode.fromJson(Map<String, dynamic> json) {
     return Episode(
@@ -33,6 +34,9 @@ class Episode {
       thumbnailUrl: json['thumbnailUrl'] ?? '',
       duration: json['duration'] ?? 0,
       isWatched: json['isWatched'] ?? false,
+      comments: (json['comments'] as List<dynamic>?) 
+          ?.map((comment) => Comment.fromJson(comment))
+          .toList() ?? [],
     );
   }
 
@@ -47,6 +51,7 @@ class Episode {
       'thumbnailUrl': thumbnailUrl,
       'duration': duration,
       'isWatched': isWatched,
+      'comments': comments.map((comment) => comment.toJson()).toList(),
     };
   }
 }
