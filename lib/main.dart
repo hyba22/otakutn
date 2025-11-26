@@ -7,7 +7,7 @@ import 'package:otakutn/providers/anime_provider.dart';
 import 'package:otakutn/providers/auth_provider.dart';
 import 'package:otakutn/services/cloudinary_service.dart';
 import 'firebase_options.dart';
-
+import 'package:otakutn/pages/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,9 +49,10 @@ class MyApp extends StatelessWidget {
         theme: ThemeData.dark().copyWith(
           scaffoldBackgroundColor: Colors.black,
         ),
-        initialRoute: '/',
+        initialRoute: '/splash',
         routes: {
           '/': (context) => const LoginPage(),
+          '/splash': (context) => const SplashScreen(),
           '/login': (context) => const LoginPage(),
           '/register': (context) => const RegisterPage(),
         },

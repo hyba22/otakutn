@@ -4,7 +4,7 @@ import 'package:otakutn/components/my_button.dart';
 import 'package:otakutn/components/my_textfield.dart';
 import 'package:otakutn/screens/anime/anime_list_screen.dart';
 import 'package:otakutn/services/auth_service.dart';
-import 'package:otakutn/pofiles/profile_screen.dart';
+import 'package:otakutn/profiles/profile_screen.dart';
 import 'package:otakutn/providers/auth_provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -76,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
         if (mounted) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const ProfileScreen()),
+            MaterialPageRoute(builder: (context) => ProfileScreen()),
           );
         }
       } else {
